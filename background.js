@@ -1,5 +1,5 @@
 var tabs = {};
-loadTime = null;
+var loadTime = null;
 
 //listening for requests on all tabs
 chrome.webRequest.onCompleted.addListener(handleAllRequests,{urls: ["<all_urls>"]},["responseHeaders"]);
@@ -20,7 +20,7 @@ function handleAllRequests(details){
 	if (details.tabId != -1){
 		if (tabs[details.tabId]==null){
 			tabs[details.tabId] = [[details], details.timeStamp];
-			message = [details, details.timeStamp];
+			var message = [details, details.timeStamp];
 			chrome.runtime.sendMessage({fromBG: message});
 		}else{
 			tabs[details.tabId][0].push(details);
@@ -30,7 +30,7 @@ function handleAllRequests(details){
 			}else{
 				loadTime = tabs[details.tabId][1];
 			}
-			message = [details, loadTime];
+			var message = [details, loadTime];
 			chrome.runtime.sendMessage({fromBG: message});
 		}
 	}
@@ -57,9 +57,9 @@ function handlePopupRequest(request, sender, sendResponse){
 	if (request.sentTabId){
 		if (tabs[request.sentTabId]!=null){
 			for (i = 0; i < tabs[request.sentTabId][0].length; i++){
-				details = tabs[request.sentTabId][0][i]
+				var details = tabs[request.sentTabId][0][i]
 				loadTime = tabs[request.sentTabId][1];
-				message = [details, loadTime];
+				var message = [details, loadTime];
 
 				//sending details to popups
 				chrome.runtime.sendMessage({fromBG: message});

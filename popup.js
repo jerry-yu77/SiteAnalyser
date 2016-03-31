@@ -12,7 +12,7 @@ $(document).ready(function(){
     var foundDomains = [];
     
     //getting Alexa ranking
-    tabDomain = getDomain(tabs[0].url);
+    var tabDomain = getDomain(tabs[0].url);
     $.get("http://data.alexa.com/data?cli=10&url="+tabDomain, handleAlexaRanking);
 
     //sending request to BG to get assets
@@ -22,14 +22,13 @@ $(document).ready(function(){
     chrome.runtime.onMessage.addListener(handleMessageFromBG);
 
     function handleAlexaRanking(data){
-      globalRank = $(data).find('POPULARITY').attr('TEXT');
-      rankLocation = $(data).find('COUNTRY').attr('NAME');
-      localRank = $(data).find('COUNTRY').attr('RANK');
+      var globalRank = $(data).find('POPULARITY').attr('TEXT');
+      var rankLocation = $(data).find('COUNTRY').attr('NAME');
+      var localRank = $(data).find('COUNTRY').attr('RANK');
 
       $('#globalRank').text(' '+globalRank);
       $('#rankLocation').append(' '+rankLocation);
       $('#localRank').text(' '+localRank);
-
     };
 
     function handleSendToBG(response){};
@@ -38,15 +37,15 @@ $(document).ready(function(){
       //filter for requests only for active tab
       if (request.fromBG[0].tabId == activeTabId){
 
-        domain_ = getDomain(request.fromBG[0].url);
+        var domain_ = getDomain(request.fromBG[0].url);
 
         //prevent searching of duplicate domains
         if (foundDomains.indexOf(domain_)==-1){
           foundDomains.push(domain_);
-          temp = findApp(domain_);
-          appName = temp[0];
-          appType = temp[1];
-          appPic = temp[2];
+          var temp = findApp(domain_);
+          var appName = temp[0];
+          var appType = temp[1];
+          var appPic = temp[2];
 
           //populating found apps from domains
           if (temp != "No App"){
@@ -72,10 +71,10 @@ $(document).ready(function(){
               console.log("In callback Domain is: " + domain);
 
               if (cname.trim() != "No CNAME"){
-                temp1 = findApp(cname);
-                appName = temp1[0];
-                appType = temp1[1];
-                appPic = temp1[2];
+                var temp1 = findApp(cname);
+                var appName = temp1[0];
+                var appType = temp1[1];
+                var appPic = temp1[2];
 
                 if (temp1 != "No App"){
                   if (foundApps[appName]==null){
@@ -100,11 +99,11 @@ $(document).ready(function(){
 
         //request navigation timing from tab
         chrome.tabs.sendMessage(activeTabId, {message: "get performance"}, function(response){
-          perfMetrics = response.fromTab;
-          ttfb = perfMetrics.responseStart - perfMetrics.navigationStart;
-          domLoaded = perfMetrics.domContentLoadedEventEnd - perfMetrics.navigationStart;
-          pageLoad = perfMetrics.loadEventEnd - perfMetrics.navigationStart;
-          fullyLoaded = request.fromBG[1] - perfMetrics.navigationStart;
+          var perfMetrics = response.fromTab;
+          var ttfb = perfMetrics.responseStart - perfMetrics.navigationStart;
+          var domLoaded = perfMetrics.domContentLoadedEventEnd - perfMetrics.navigationStart;
+          var pageLoad = perfMetrics.loadEventEnd - perfMetrics.navigationStart;
+          var fullyLoaded = request.fromBG[1] - perfMetrics.navigationStart;
 
           $("#ttfb").text(' '+ttfb+' ms');
           $("#domLoaded").text(' '+domLoaded+' ms');
