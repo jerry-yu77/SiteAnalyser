@@ -52,7 +52,7 @@ $(document).ready(function(){
           if (temp != "No App"){
             if (foundApps[appName]==null){
               foundApps[appName]=[appType,[domain_],appPic];
-              $('.'+foundApps[appName][0]).append($('<div class="appName" id="'+appName+'"><p>'+appName+'<img align="right" style="margin-top: -15px" src="'+foundApps[appName][2]+'"></img></p></div>'));
+              $('.'+appType).append($('<div class="appName" id="'+appName+'"><p>'+appName+'<img align="right" class="appPic" src="'+appPic+'"></img></p></div>'));
                 $('#'+appName).append($('<div class="appSrc">'+domain_+'</div>'));  
             }else{
               foundApps[appName][1].push(domain_);
@@ -80,7 +80,7 @@ $(document).ready(function(){
                 if (temp1 != "No App"){
                   if (foundApps[appName]==null){
                     foundApps[appName]=[appType,[domain],appPic];
-                    $('.'+foundApps[appName][0]).append($('<div class="appName" id="'+appName+'"><p>'+appName+'<img align="right" style="margin-top: -15px" src="'+foundApps[appName][2]+'"></img></p></div>'));
+                    $('.'+appType).append($('<div class="appName" id="'+appName+'"><p>'+appName+'<img align="right" class="appPic" src="'+appPic+'"></img></p></div>'));
                       $('#'+appName).append($('<div class="appSrc">'+domain+'</div>'));
                   }else{
                     if($.inArray(domain, foundApps[appName][1])==-1){
@@ -114,12 +114,13 @@ $(document).ready(function(){
 
         //pie chart and legend updates
         var $doughnutChart = $('#doughnutChart');
+        var $assetLegend = $('.assetLegend');
         switch(request.fromBG[0].type) {
           case "script":
             jsCount++;
             redrawChart();
             if (jsCount==1){
-              $(".assetLegend").append($('<div class="square" style="background:#2C3E50"></div><div>&nbsp;&nbsp;Javascript: <span id="javascript">1</span></div>'));
+              $assetLegend.append($('<div class="square" style="background:#2C3E50"></div><div>&nbsp;&nbsp;Javascript: <span id="javascript">1</span></div>'));
             }else{
               $("#javascript").text(jsCount);
             }
@@ -128,7 +129,7 @@ $(document).ready(function(){
             imageCount++;
             redrawChart();
             if (imageCount==1){
-              $(".assetLegend").append($('<div class="square" style="background:#FC4349"></div><div>&nbsp;&nbsp;Image: <span id="image">1</span></div>'));
+              $assetLegend.append($('<div class="square" style="background:#FC4349"></div><div>&nbsp;&nbsp;Image: <span id="image">1</span></div>'));
             }else{
               $("#image").text(imageCount);
             }
@@ -137,7 +138,7 @@ $(document).ready(function(){
             cssCount++;
             redrawChart();
             if (cssCount==1){
-              $(".assetLegend").append($('<div class="square" style="background:#6DBCDB"></div><div>&nbsp;&nbsp;CSS: <span id="css">1</span></div>'));
+              $assetLegend.append($('<div class="square" style="background:#6DBCDB"></div><div>&nbsp;&nbsp;CSS: <span id="css">1</span></div>'));
             }else{
               $("#css").text(cssCount);
             }
@@ -146,7 +147,7 @@ $(document).ready(function(){
             fontCount++;
             redrawChart();
             if (fontCount==1){
-              $(".assetLegend").append($('<div class="square" style="background:#F7E248"></div><div>&nbsp;&nbsp;Font: <span id="font">1</span></div>'));
+              $assetLegend.append($('<div class="square" style="background:#F7E248"></div><div>&nbsp;&nbsp;Font: <span id="font">1</span></div>'));
             }else{
               $("#font").text(fontCount);
             }
@@ -155,7 +156,7 @@ $(document).ready(function(){
             xhrCount++;
             redrawChart();
             if (xhrCount==1){
-              $(".assetLegend").append($('<div class="square" style="background:#009933"></div><div>&nbsp;&nbsp;XHR: <span id="xhr">1</span></div>'));
+              $assetLegend.append($('<div class="square" style="background:#009933"></div><div>&nbsp;&nbsp;XHR: <span id="xhr">1</span></div>'));
             }else{
               $("#xhr").text(xhrCount);
             }
@@ -164,7 +165,7 @@ $(document).ready(function(){
             htmlCount++;
             redrawChart();
             if (htmlCount==1){
-              $(".assetLegend").append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
+              $assetLegend.append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
             }else{
               $("#html").text(htmlCount);
             }
@@ -173,7 +174,7 @@ $(document).ready(function(){
             htmlCount++;
             redrawChart();
             if (htmlCount==1){
-              $(".assetLegend").append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
+              $assetLegend.append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
             }else{
               $("#html").text(htmlCount);
             }
@@ -182,7 +183,7 @@ $(document).ready(function(){
             otherCount++;
             redrawChart();
             if (otherCount==1){
-              $(".assetLegend").append($('<div class="square" style="background:#FFF"></div><div>&nbsp;&nbsp;Other: <span id="other">1</span></div>'));
+              $assetLegend.append($('<div class="square" style="background:#FFF"></div><div>&nbsp;&nbsp;Other: <span id="other">1</span></div>'));
             }else{
               $("#other").text(otherCount);
             }
