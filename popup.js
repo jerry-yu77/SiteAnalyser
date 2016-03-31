@@ -1,34 +1,34 @@
 $(document).ready(function(){
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    var active_tabId = tabs[0].id;
-    var html_count = 0;
-    var css_count = 0;
-    var js_count = 0;
-    var image_count = 0;
-    var font_count = 0;
-    var xhr_count = 0;
-    var other_count = 0;
-    var found_apps = {};
-    var found_domains = [];
+    var activeTabId = tabs[0].id;
+    var htmlCount = 0;
+    var cssCount = 0;
+    var jsCount = 0;
+    var imageCount = 0;
+    var fontCount = 0;
+    var xhrCount = 0;
+    var otherCount = 0;
+    var foundApps = {};
+    var foundDomains = [];
     
     //getting Alexa ranking
-    tab_domain = getDomain(tabs[0].url);
-    $.get("http://data.alexa.com/data?cli=10&url="+tab_domain, handleAlexaRanking);
+    tabDomain = getDomain(tabs[0].url);
+    $.get("http://data.alexa.com/data?cli=10&url="+tabDomain, handleAlexaRanking);
 
     //sending request to BG to get assets
-    chrome.runtime.sendMessage({sentTabId: active_tabId}, handleSendToBG);
+    chrome.runtime.sendMessage({sentTabId: activeTabId}, handleSendToBG);
 
     //listening to BG
     chrome.runtime.onMessage.addListener(handleMessageFromBG);
 
     function handleAlexaRanking(data){
-      global_rank = $(data).find('POPULARITY').attr('TEXT');
-      rank_location = $(data).find('COUNTRY').attr('NAME');
-      local_rank = $(data).find('COUNTRY').attr('RANK');
+      globalRank = $(data).find('POPULARITY').attr('TEXT');
+      rankLocation = $(data).find('COUNTRY').attr('NAME');
+      localRank = $(data).find('COUNTRY').attr('RANK');
 
-      $("#global_rank").text(' '+global_rank);
-      $("#rank_location").append(' '+rank_location);
-      $("#local_rank").text(' '+local_rank);
+      $('#globalRank').text(' '+globalRank);
+      $('#rankLocation').append(' '+rankLocation);
+      $('#localRank').text(' '+localRank);
 
     };
 
@@ -36,30 +36,30 @@ $(document).ready(function(){
 
     function handleMessageFromBG(request, sender, sendResponse){
       //filter for requests only for active tab
-      if (request.fromBG[0].tabId == active_tabId){
+      if (request.fromBG[0].tabId == activeTabId){
 
         domain_ = getDomain(request.fromBG[0].url);
 
         //prevent searching of duplicate domains
-        if (found_domains.indexOf(domain_)==-1){
-          found_domains.push(domain_);
+        if (foundDomains.indexOf(domain_)==-1){
+          foundDomains.push(domain_);
           temp = findApp(domain_);
-          app_name = temp[0];
-          app_type = temp[1];
-          app_pic = temp[2];
+          appName = temp[0];
+          appType = temp[1];
+          appPic = temp[2];
 
           //populating found apps from domains
           if (temp != "No App"){
-            if (found_apps[app_name]==null){
-              found_apps[app_name]=[app_type,[domain_],app_pic];
-              $('.'+found_apps[app_name][0]).append($('<div class="app_name" id="'+app_name+'"><p>'+app_name+'<img align="right" style="margin-top: -15px" src="'+found_apps[app_name][2]+'"></img></p></div>'));
-                $('#'+app_name).append($('<div class="app_src">'+domain_+'</div>'));  
+            if (foundApps[appName]==null){
+              foundApps[appName]=[appType,[domain_],appPic];
+              $('.'+foundApps[appName][0]).append($('<div class="appName" id="'+appName+'"><p>'+appName+'<img align="right" style="margin-top: -15px" src="'+foundApps[appName][2]+'"></img></p></div>'));
+                $('#'+appName).append($('<div class="appSrc">'+domain_+'</div>'));  
             }else{
-              found_apps[app_name][1].push(domain_);
-              if ($('#'+app_name).closest('div').find('.app_src').is(":visible")){  //accounting for toggling
-                $('#'+app_name).append($('<div class="app_src" style="display:block;">'+domain_+'</div>'));
+              foundApps[appName][1].push(domain_);
+              if ($('#'+appName).closest('div').find('.appSrc').is(":visible")){  //accounting for toggling
+                $('#'+appName).append($('<div class="appSrc" style="display:block;">'+domain_+'</div>'));
               }else{
-                $('#'+app_name).append($('<div class="app_src">'+domain_+'</div>'));
+                $('#'+appName).append($('<div class="appSrc">'+domain_+'</div>'));
               }
             }
           }
@@ -73,22 +73,22 @@ $(document).ready(function(){
 
               if (cname.trim() != "No CNAME"){
                 temp1 = findApp(cname);
-                app_name = temp1[0];
-                app_type = temp1[1];
-                app_pic = temp1[2];
+                appName = temp1[0];
+                appType = temp1[1];
+                appPic = temp1[2];
 
                 if (temp1 != "No App"){
-                  if (found_apps[app_name]==null){
-                    found_apps[app_name]=[app_type,[domain],app_pic];
-                    $('.'+found_apps[app_name][0]).append($('<div class="app_name" id="'+app_name+'"><p>'+app_name+'<img align="right" style="margin-top: -15px" src="'+found_apps[app_name][2]+'"></img></p></div>'));
-                      $('#'+app_name).append($('<div class="app_src">'+domain+'</div>'));
+                  if (foundApps[appName]==null){
+                    foundApps[appName]=[appType,[domain],appPic];
+                    $('.'+foundApps[appName][0]).append($('<div class="appName" id="'+appName+'"><p>'+appName+'<img align="right" style="margin-top: -15px" src="'+foundApps[appName][2]+'"></img></p></div>'));
+                      $('#'+appName).append($('<div class="appSrc">'+domain+'</div>'));
                   }else{
-                    if($.inArray(domain, found_apps[app_name][1])==-1){
-                      found_apps[app_name][1].push(domain);
-                      if ($('#'+app_name).closest('div').find('.app_src').is(":visible")){  //accounting for toggling
-                        $('#'+app_name).append($('<div class="app_src" style="display:block;">'+domain+'</div>'));
+                    if($.inArray(domain, foundApps[appName][1])==-1){
+                      foundApps[appName][1].push(domain);
+                      if ($('#'+appName).closest('div').find('.appSrc').is(":visible")){  //accounting for toggling
+                        $('#'+appName).append($('<div class="appSrc" style="display:block;">'+domain+'</div>'));
                       }else{
-                        $('#'+app_name).append($('<div class="app_src">'+domain+'</div>'));
+                        $('#'+appName).append($('<div class="appSrc">'+domain+'</div>'));
                       }
                     }
                   }
@@ -99,12 +99,12 @@ $(document).ready(function(){
         }
 
         //request navigation timing from tab
-        chrome.tabs.sendMessage(active_tabId, {message: "get performance"}, function(response){
-          perf_metrics = response.fromTab;
-          ttfb = perf_metrics.responseStart - perf_metrics.navigationStart;
-          domLoaded = perf_metrics.domContentLoadedEventEnd - perf_metrics.navigationStart;
-          pageLoad = perf_metrics.loadEventEnd - perf_metrics.navigationStart;
-          fullyLoaded = request.fromBG[1] - perf_metrics.navigationStart;
+        chrome.tabs.sendMessage(activeTabId, {message: "get performance"}, function(response){
+          perfMetrics = response.fromTab;
+          ttfb = perfMetrics.responseStart - perfMetrics.navigationStart;
+          domLoaded = perfMetrics.domContentLoadedEventEnd - perfMetrics.navigationStart;
+          pageLoad = perfMetrics.loadEventEnd - perfMetrics.navigationStart;
+          fullyLoaded = request.fromBG[1] - perfMetrics.navigationStart;
 
           $("#ttfb").text(' '+ttfb+' ms');
           $("#domLoaded").text(' '+domLoaded+' ms');
@@ -116,117 +116,117 @@ $(document).ready(function(){
         var $doughnutChart = $('#doughnutChart');
         switch(request.fromBG[0].type) {
           case "script":
-            js_count++;
+            jsCount++;
             redrawChart();
-            if (js_count==1){
-              $(".asset_legend").append($('<div class="square" style="background:#2C3E50"></div><div>&nbsp;&nbsp;Javascript: <span id="javascript">1</span></div>'));
+            if (jsCount==1){
+              $(".assetLegend").append($('<div class="square" style="background:#2C3E50"></div><div>&nbsp;&nbsp;Javascript: <span id="javascript">1</span></div>'));
             }else{
-              $("#javascript").text(js_count);
+              $("#javascript").text(jsCount);
             }
             break;
           case "image":
-            image_count++;
+            imageCount++;
             redrawChart();
-            if (image_count==1){
-              $(".asset_legend").append($('<div class="square" style="background:#FC4349"></div><div>&nbsp;&nbsp;Image: <span id="image">1</span></div>'));
+            if (imageCount==1){
+              $(".assetLegend").append($('<div class="square" style="background:#FC4349"></div><div>&nbsp;&nbsp;Image: <span id="image">1</span></div>'));
             }else{
-              $("#image").text(image_count);
+              $("#image").text(imageCount);
             }
             break;
           case "stylesheet":
-            css_count++;
+            cssCount++;
             redrawChart();
-            if (css_count==1){
-              $(".asset_legend").append($('<div class="square" style="background:#6DBCDB"></div><div>&nbsp;&nbsp;CSS: <span id="css">1</span></div>'));
+            if (cssCount==1){
+              $(".assetLegend").append($('<div class="square" style="background:#6DBCDB"></div><div>&nbsp;&nbsp;CSS: <span id="css">1</span></div>'));
             }else{
-              $("#css").text(css_count);
+              $("#css").text(cssCount);
             }
             break;
           case "font":
-            font_count++;
+            fontCount++;
             redrawChart();
-            if (font_count==1){
-              $(".asset_legend").append($('<div class="square" style="background:#F7E248"></div><div>&nbsp;&nbsp;Font: <span id="font">1</span></div>'));
+            if (fontCount==1){
+              $(".assetLegend").append($('<div class="square" style="background:#F7E248"></div><div>&nbsp;&nbsp;Font: <span id="font">1</span></div>'));
             }else{
-              $("#font").text(font_count);
+              $("#font").text(fontCount);
             }
             break;
           case "xmlhttprequest":
-            xhr_count++;
+            xhrCount++;
             redrawChart();
-            if (xhr_count==1){
-              $(".asset_legend").append($('<div class="square" style="background:#009933"></div><div>&nbsp;&nbsp;XHR: <span id="xhr">1</span></div>'));
+            if (xhrCount==1){
+              $(".assetLegend").append($('<div class="square" style="background:#009933"></div><div>&nbsp;&nbsp;XHR: <span id="xhr">1</span></div>'));
             }else{
-              $("#xhr").text(xhr_count);
+              $("#xhr").text(xhrCount);
             }
             break;
           case "main_frame":
-            html_count++;
+            htmlCount++;
             redrawChart();
-            if (html_count==1){
-              $(".asset_legend").append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
+            if (htmlCount==1){
+              $(".assetLegend").append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
             }else{
-              $("#html").text(html_count);
+              $("#html").text(htmlCount);
             }
             break;
           case "sub_frame":
-            html_count++;
+            htmlCount++;
             redrawChart();
-            if (html_count==1){
-              $(".asset_legend").append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
+            if (htmlCount==1){
+              $(".assetLegend").append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
             }else{
-              $("#html").text(html_count);
+              $("#html").text(htmlCount);
             }
             break;
           default:
-            other_count++;
+            otherCount++;
             redrawChart();
-            if (other_count==1){
-              $(".asset_legend").append($('<div class="square" style="background:#FFF"></div><div>&nbsp;&nbsp;Other: <span id="other">1</span></div>'));
+            if (otherCount==1){
+              $(".assetLegend").append($('<div class="square" style="background:#FFF"></div><div>&nbsp;&nbsp;Other: <span id="other">1</span></div>'));
             }else{
-              $("#other").text(other_count);
+              $("#other").text(otherCount);
             }
         }
         function redrawChart(){
           $doughnutChart.html('');
           $doughnutChart.drawDoughnutChart([
-            { title: "Javascript", value : js_count,  color: "#2C3E50" },
-            { title: "Image", value : image_count,   color: "#FC4349" },
-            { title: "CSS", value : css_count,   color: "#6DBCDB" },
-            { title: "Font", value : font_count,   color: "#F7E248" },
-            { title: "XHR", value : xhr_count,   color: "#009933" },
-            { title: "HTML", value : html_count,   color: "#D7DADB" },
-            { title: "Other", value : other_count,   color: "#FFF" }
+            { title: "Javascript", value : jsCount,  color: "#2C3E50" },
+            { title: "Image", value : imageCount,   color: "#FC4349" },
+            { title: "CSS", value : cssCount,   color: "#6DBCDB" },
+            { title: "Font", value : fontCount,   color: "#F7E248" },
+            { title: "XHR", value : xhrCount,   color: "#009933" },
+            { title: "HTML", value : htmlCount,   color: "#D7DADB" },
+            { title: "Other", value : otherCount,   color: "#FFF" }
           ]);
         };
       }
 
       //reset counts to 0 on URL update
       if (request.fromBG == "reset"){
-        html_count = 0;
-        css_count = 0;
-        js_count = 0;
-        image_count = 0;
-        font_count = 0;
-        xhr_count = 0;
-        other_count = 0;
-        found_apps = {};
-        found_domains = [];
-        $(".asset_legend").html('');
+        htmlCount = 0;
+        cssCount = 0;
+        jsCount = 0;
+        imageCount = 0;
+        fontCount = 0;
+        xhrCount = 0;
+        otherCount = 0;
+        foundApps = {};
+        foundDomains = [];
+        $(".assetLegend").html('');
       }
     };
   });
 
   //domain toggling
-  $('.category').on('click', '.app_name', (function(){
-    $(this).closest('div').find('.app_src').slideToggle("fast");
+  $('.category').on('click', '.appName', (function(){
+    $(this).closest('div').find('.appSrc').slideToggle("fast");
   }));
 });
 
 function findApp(domain){
 //looking at domains coming in
 // $('#discover').append($('<p>'+domain+'</p>'));
-  var lookup_table={
+  var lookupTable={
     'edgekey':['Akamai','cdn','logos/Akamai-logo.png'],
     'edgesuite':['Akamai','cdn','logos/Akamai-logo.png'],
     'akamai':['Akamai','cdn','logos/Akamai-logo.png'],
@@ -254,9 +254,9 @@ function findApp(domain){
     'yottaa':['Yottaa','cdn','logos/Yottaa-logo.png']
   };
 
-  for (key in lookup_table){
+  for (key in lookupTable){
     if ((domain.toLowerCase()).includes(key)){
-      return lookup_table[key];
+      return lookupTable[key];
     }
   }
   return "No App";
