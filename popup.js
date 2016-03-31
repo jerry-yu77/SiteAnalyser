@@ -13,7 +13,15 @@ $(document).ready(function(){
     
     //getting Alexa ranking
     tab_domain = getDomain(tabs[0].url);
-    $.get("http://data.alexa.com/data?cli=10&url="+tab_domain, function(data){
+    $.get("http://data.alexa.com/data?cli=10&url="+tab_domain, handleAlexaRanking);
+
+    //sending request to BG to get assets
+    chrome.runtime.sendMessage({sentTabId: active_tabId}, handleSendToBG);
+
+    //listening to BG
+    chrome.runtime.onMessage.addListener(handleMessageFromBG);
+
+    function handleAlexaRanking(data){
       global_rank = $(data).find('POPULARITY').attr('TEXT');
       rank_location = $(data).find('COUNTRY').attr('NAME');
       local_rank = $(data).find('COUNTRY').attr('RANK');
@@ -22,14 +30,11 @@ $(document).ready(function(){
       $("#rank_location").append(' '+rank_location);
       $("#local_rank").text(' '+local_rank);
 
-    });
+    };
 
-    //sending request to BG to get assets
-    chrome.runtime.sendMessage({sentTabId: active_tabId}, function(response) {});
+    function handleSendToBG(response){};
 
-    //listening to BG
-    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
-
+    function handleMessageFromBG(request, sender, sendResponse){
       //filter for requests only for active tab
       if (request.fromBG[0].tabId == active_tabId){
 
@@ -112,7 +117,7 @@ $(document).ready(function(){
         switch(request.fromBG[0].type) {
           case "script":
             js_count++;
-            redrawChart($doughnutChart);
+            redrawChart();
             if (js_count==1){
               $(".asset_legend").append($('<div class="square" style="background:#2C3E50"></div><div>&nbsp;&nbsp;Javascript: <span id="javascript">1</span></div>'));
             }else{
@@ -121,7 +126,7 @@ $(document).ready(function(){
             break;
           case "image":
             image_count++;
-            redrawChart($doughnutChart);
+            redrawChart();
             if (image_count==1){
               $(".asset_legend").append($('<div class="square" style="background:#FC4349"></div><div>&nbsp;&nbsp;Image: <span id="image">1</span></div>'));
             }else{
@@ -130,7 +135,7 @@ $(document).ready(function(){
             break;
           case "stylesheet":
             css_count++;
-            redrawChart($doughnutChart);
+            redrawChart();
             if (css_count==1){
               $(".asset_legend").append($('<div class="square" style="background:#6DBCDB"></div><div>&nbsp;&nbsp;CSS: <span id="css">1</span></div>'));
             }else{
@@ -139,7 +144,7 @@ $(document).ready(function(){
             break;
           case "font":
             font_count++;
-            redrawChart($doughnutChart);
+            redrawChart();
             if (font_count==1){
               $(".asset_legend").append($('<div class="square" style="background:#F7E248"></div><div>&nbsp;&nbsp;Font: <span id="font">1</span></div>'));
             }else{
@@ -148,7 +153,7 @@ $(document).ready(function(){
             break;
           case "xmlhttprequest":
             xhr_count++;
-            redrawChart($doughnutChart);
+            redrawChart();
             if (xhr_count==1){
               $(".asset_legend").append($('<div class="square" style="background:#009933"></div><div>&nbsp;&nbsp;XHR: <span id="xhr">1</span></div>'));
             }else{
@@ -157,7 +162,7 @@ $(document).ready(function(){
             break;
           case "main_frame":
             html_count++;
-            redrawChart($doughnutChart);
+            redrawChart();
             if (html_count==1){
               $(".asset_legend").append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
             }else{
@@ -166,7 +171,7 @@ $(document).ready(function(){
             break;
           case "sub_frame":
             html_count++;
-            redrawChart($doughnutChart);
+            redrawChart();
             if (html_count==1){
               $(".asset_legend").append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
             }else{
@@ -175,13 +180,25 @@ $(document).ready(function(){
             break;
           default:
             other_count++;
-            redrawChart($doughnutChart);
+            redrawChart();
             if (other_count==1){
               $(".asset_legend").append($('<div class="square" style="background:#FFF"></div><div>&nbsp;&nbsp;Other: <span id="other">1</span></div>'));
             }else{
               $("#other").text(other_count);
             }
         }
+        function redrawChart(){
+          $doughnutChart.html('');
+          $doughnutChart.drawDoughnutChart([
+            { title: "Javascript", value : js_count,  color: "#2C3E50" },
+            { title: "Image", value : image_count,   color: "#FC4349" },
+            { title: "CSS", value : css_count,   color: "#6DBCDB" },
+            { title: "Font", value : font_count,   color: "#F7E248" },
+            { title: "XHR", value : xhr_count,   color: "#009933" },
+            { title: "HTML", value : html_count,   color: "#D7DADB" },
+            { title: "Other", value : other_count,   color: "#FFF" }
+          ]);
+        };
       }
 
       //reset counts to 0 on URL update
@@ -195,22 +212,9 @@ $(document).ready(function(){
         other_count = 0;
         found_apps = {};
         found_domains = [];
-        $(".asset_legend").replaceWith($('<div class="asset_legend">'));
+        $(".asset_legend").html('');
       }
-
-      function redrawChart($doughnutChart){
-        $doughnutChart.html('');
-        $doughnutChart.drawDoughnutChart([
-          { title: "Javascript", value : js_count,  color: "#2C3E50" },
-          { title: "Image", value : image_count,   color: "#FC4349" },
-          { title: "CSS", value : css_count,   color: "#6DBCDB" },
-          { title: "Font", value : font_count,   color: "#F7E248" },
-          { title: "XHR", value : xhr_count,   color: "#009933" },
-          { title: "HTML", value : html_count,   color: "#D7DADB" },
-          { title: "Other", value : other_count,   color: "#FFF" }
-        ]);
-      };
-    });
+    };
   });
 
   //domain toggling
@@ -219,8 +223,7 @@ $(document).ready(function(){
   }));
 });
 
-
-var findApp = function(domain){
+function findApp(domain){
 //looking at domains coming in
 // $('#discover').append($('<p>'+domain+'</p>'));
   var lookup_table={
@@ -259,7 +262,7 @@ var findApp = function(domain){
   return "No App";
 };
 
-var getDomain = function(href){
+function getDomain(href){
   var parser = document.createElement("a");
   parser.href = href;
 

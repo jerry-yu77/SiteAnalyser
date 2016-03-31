@@ -2,7 +2,21 @@ var tabs = {};
 loadTime = null;
 
 //listening for requests on all tabs
-chrome.webRequest.onCompleted.addListener(function (details){
+chrome.webRequest.onCompleted.addListener(handleAllRequests,{urls: ["<all_urls>"]},["responseHeaders"]);
+
+//changing tabs
+chrome.tabs.onActivated.addListener(handleTabChange);
+
+//url change
+chrome.tabs.onUpdated.addListener(handleURLChange);
+
+//closing tab
+chrome.tabs.onRemoved.addListener(handleTabClose);
+
+//listening to popup requests
+chrome.runtime.onMessage.addListener(handlePopupRequest);
+
+function handleAllRequests(details){
 	if (details.tabId != -1){
 		if (tabs[details.tabId]==null){
 			tabs[details.tabId] = [[details], details.timeStamp];
@@ -20,39 +34,26 @@ chrome.webRequest.onCompleted.addListener(function (details){
 			chrome.runtime.sendMessage({fromBG: message});
 		}
 	}
-},
-{urls: ["<all_urls>"]}, 
-["responseHeaders"]);
+};
 
-//changing tabs
-chrome.tabs.onActivated.addListener(function (tab) {
+function handleTabChange(tab){
 	console.log("Changed tab ID: "+tab.tabId);
-	if (tabs[tab.tabId]==null){
-		console.log("In tabs: "+tabs[tab.tabId]);
-		console.log("refresh the page to get assets");
-	}else{
-		console.log("In tabs: "+tabs[tab.tabId][0]);
-		console.log("Assets in this tab: "+tabs[tab.tabId][0].length);
-	}
-});
+};
 
-//url change
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+function handleURLChange(tabId, changeInfo, tab){
 	//reset tab assets to 0 on URL change
 	if (changeInfo.status == "loading"){
 		tabs[tabId]=null;
 		//send message to popup to reset count variables
 		chrome.runtime.sendMessage({fromBG: "reset"});
 	}
-});
+};
 
-//closing tab
-chrome.tabs.onRemoved.addListener(function (tabId, removeInfo){
+function handleTabClose(tabId, removeInfo){
 	delete tabs[tabId];
-});
+}
 
-//listening to popup requests
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+function handlePopupRequest(request, sender, sendResponse){
 	if (request.sentTabId){
 		if (tabs[request.sentTabId]!=null){
 			for (i = 0; i < tabs[request.sentTabId][0].length; i++){
@@ -62,16 +63,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 
 				//sending details to popups
 				chrome.runtime.sendMessage({fromBG: message});
-
-				// for (var j = 0; j < details.responseHeaders.length; j++) {
-			 //  	if((details.responseHeaders[j].name).toLowerCase() == "content-type"){
-			 //  		console.log("Response Header: "+details.responseHeaders[j].name+": "+details.responseHeaders[j].value);
-			 //  	}
-			 //  };
 			}
 		}
 		else{
 			alert("Refresh the page to get statistics");
 		}
 	}
-});
+};
