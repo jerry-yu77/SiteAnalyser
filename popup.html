@@ -1,0 +1,168 @@
+<!doctype html>
+<!--
+Yottaa Site Analyser
+-->
+<html>
+  <head>
+    <style>
+      body {
+        font-family: "Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;
+        font-size: 14px;
+        min-width: 335px;
+        max-width: 900px;
+        height: 400px;
+        padding: 0;
+        position: relative;
+        color: white;
+        background-color: #404040;
+      }
+      #header {
+        font-size: 18px;
+        color: white;
+        background-color: black;
+        width: 100%;
+        height: 60px;
+
+      }
+      .category {
+        padding: 5px;
+        font-size: 16px;
+        color: white;
+        background-color: #404040;
+      }
+      .app_name {
+        padding: 5px;
+        font-size: 14px;
+        background-color: #666666;
+        box-shadow:0 0 10px #666666;
+      }
+      .app_src {
+        padding: 5px;
+        font-size: 10px;
+        background-color: #bfbfbf;
+        display: none;
+      }
+      .chart {
+        position: relative;
+        width: 160px;
+        height: 160px;
+        top: 50%;
+        left: 50%;
+        margin: -200px 0 0 -130px;*/
+      }
+      .doughnutTip {
+        position: absolute;
+        min-width: 30px;
+        max-width: 300px;
+        padding: 5px 15px;
+        border-radius: 1px;
+        background: rgba(0,0,0,.8);
+        color: #ddd;
+        font-size: 17px;
+        text-shadow: 0 1px 0 #000;
+        text-transform: uppercase;
+        text-align: center;
+        line-height: 1.3;
+        letter-spacing: .06em;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        pointer-events: none;
+        &::after {
+            position: absolute;
+            left: 50%;
+            bottom: -6px;
+            content: "";
+            height: 0;
+            margin: 0 0 0 -6px;
+            border-right: 5px solid transparent;
+            border-left: 5px solid transparent;
+            border-top: 6px solid rgba(0,0,0,.7);
+            line-height: 0;
+        }
+      }
+      .doughnutSummary {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        color: #d5d5d5;
+        text-align: center;
+        text-shadow: 0 -1px 0 #111;
+        cursor: default;
+      }
+      .doughnutSummaryTitle {
+        position: absolute;
+        top: 20%;
+        width: 100%;
+        margin-top: -20px;
+        font-size: 15px;
+      }
+      .doughnutSummaryNumber {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        margin-top: -15px;
+        font-size: 30px;
+      }
+
+      .chart path:hover { opacity: 0.65; }
+
+      .asset_legend {
+        font-size: 12px;
+        color: white;
+        height: 100px;
+        margin-top: 50px;
+        margin-left: 230px;
+      }
+
+      .square {
+        width: 8px;
+        height: 8px;
+        margin-top: 2px;
+        float: left;
+        box-shadow:0 0 3px black;
+      }
+    </style>
+
+    <script src="jquery-1.12.0.min.js"></script>
+    <script src="popup.js"></script>
+    <script src="jquery.drawDoughnutChart.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <img src="Yottaa-logo-small.jpg" style="margin-top: 8px"><span>Site Analyser</span></img>
+    </div>
+
+    <div id="doughnutChart" class="chart"></div>
+    <div class="asset_legend"></div>
+
+    <div style="margin-left: 200px; height: 60px">
+      <div style="font-size: 10px">Global Rank</div>
+      <div id="global_rank"></div>
+      <div id="rank_location" style="font-size: 10px">Rank in</div>
+      <div id="local_rank"></div>
+    </div>
+
+    <div style="font-size: 12px">
+      <div style="float:left; width:170px; margin-left: 6px">
+        <div>TTFB:<span id="ttfb"></span></div>
+        <div>DOM Loaded:<span id="domLoaded"></span></div>
+      </div>
+      <div>
+        <div>Page Load:<span id="pageLoad"></span></div>
+        <div>Fully Loaded:<span id="fullyLoaded"></span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="cdn category">CDNs:</div>
+      <div class="platform category">Platforms:</div>
+      <div class="analytics category">Analytics:</div>
+      <div class="tagManager category">Tag Mangagers:</div>
+      <div class="3rdParty category">3rd Parties:</div>
+    </div>
+
+    <div id="discover"></div>
+
+  </body>
+</html>
+
