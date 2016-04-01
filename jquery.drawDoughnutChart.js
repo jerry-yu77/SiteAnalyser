@@ -32,11 +32,11 @@
         animateRotate : true,
         tipOffsetX: -8,
         tipOffsetY: -45,
-        tipClass: "doughnutTip",
-        summaryClass: "doughnutSummary",
+        tipClass: "doughnut-tip",
+        summaryClass: "doughnut-summary",
         summaryTitle: "TOTAL:",
-        summaryTitleClass: "doughnutSummaryTitle",
-        summaryNumberClass: "doughnutSummaryNumber",
+        summaryTitleClass: "doughnut-summary-title",
+        summaryNumberClass: "doughnut-summary-number",
         beforeDraw: function() {  },
         afterDrawed : function() {  },
         onPathEnter : function(e,data) {  },
@@ -151,14 +151,14 @@
       var order = $(this).data().order;
       $tip.text(data[order].title + ": " + data[order].value)
           .fadeIn(200);
-      $(".doughnutSummaryTitle").hide();
-      $(".doughnutSummaryNumber").text(Math.round((data[order].value/segmentTotal)*100)+'%');
+      $(".doughnut-summary-title").hide();
+      $(".doughnut-summary-number").text(Math.round((data[order].value/segmentTotal)*100)+'%');
       settings.onPathEnter.apply($(this),[e,data]);
     }
     function pathMouseLeave(e) {
       $tip.hide();
-      $(".doughnutSummaryTitle").show();
-      $(".doughnutSummaryNumber").text(segmentTotal);
+      $(".doughnut-summary-title").show();
+      $(".doughnut-summary-number").text(segmentTotal);
       settings.onPathLeave.apply($(this),[e,data]);
     }
     function pathMouseMove(e) {

@@ -13,7 +13,7 @@ $(document).ready(function(){
     
     //getting Alexa ranking
     var tabDomain = getDomain(tabs[0].url);
-    $.get("http://data.alexa.com/data?cli=10&url="+tabDomain, handleAlexaRanking);
+    $.get("http://data.alexa.com/data?cli=10&url="+tabDomain, handlealexaRanking);
 
     //sending request to BG to get assets
     chrome.runtime.sendMessage({sentTabId: activeTabId}, handleSendToBG);
@@ -21,14 +21,14 @@ $(document).ready(function(){
     //listening to BG
     chrome.runtime.onMessage.addListener(handleMessageFromBG);
 
-    function handleAlexaRanking(data){
+    function handlealexaRanking(data){
       var globalRank = $(data).find('POPULARITY').attr('TEXT');
       var rankLocation = $(data).find('COUNTRY').attr('NAME');
       var localRank = $(data).find('COUNTRY').attr('RANK');
 
-      $('#globalRank').text(' '+globalRank);
-      $('#rankLocation').append(' '+rankLocation);
-      $('#localRank').text(' '+localRank);
+      $('#global-rank').text(' '+globalRank);
+      $('#rank-location').append(' '+rankLocation);
+      $('#local-rank').text(' '+localRank);
     };
 
     function handleSendToBG(response){};
@@ -51,14 +51,14 @@ $(document).ready(function(){
           if (temp != "No App"){
             if (foundApps[appName]==null){
               foundApps[appName]=[appType,[domain_],appPic];
-              $('.'+appType).append($('<div class="appName" id="'+appName+'"><p>'+appName+'<img align="right" class="appPic" src="'+appPic+'"></img></p></div>'));
-                $('#'+appName).append($('<div class="appSrc">'+domain_+'</div>'));  
+              $('.'+appType).append($('<div class="app-name" id="'+appName+'"><p>'+appName+'<img align="right" class="app-pic" src="'+appPic+'"></img></p></div>'));
+                $('#'+appName).append($('<div class="app-src">'+domain_+'</div>'));  
             }else{
               foundApps[appName][1].push(domain_);
-              if ($('#'+appName).closest('div').find('.appSrc').is(":visible")){  //accounting for toggling
-                $('#'+appName).append($('<div class="appSrc" style="display:block;">'+domain_+'</div>'));
+              if ($('#'+appName).closest('div').find('.app-src').is(":visible")){  //accounting for toggling
+                $('#'+appName).append($('<div class="app-src" style="display:block;">'+domain_+'</div>'));
               }else{
-                $('#'+appName).append($('<div class="appSrc">'+domain_+'</div>'));
+                $('#'+appName).append($('<div class="app-src">'+domain_+'</div>'));
               }
             }
           }
@@ -79,15 +79,15 @@ $(document).ready(function(){
                 if (temp1 != "No App"){
                   if (foundApps[appName]==null){
                     foundApps[appName]=[appType,[domain],appPic];
-                    $('.'+appType).append($('<div class="appName" id="'+appName+'"><p>'+appName+'<img align="right" class="appPic" src="'+appPic+'"></img></p></div>'));
-                      $('#'+appName).append($('<div class="appSrc">'+domain+'</div>'));
+                    $('.'+appType).append($('<div class="app-name" id="'+appName+'"><p>'+appName+'<img align="right" class="app-pic" src="'+appPic+'"></img></p></div>'));
+                      $('#'+appName).append($('<div class="app-src">'+domain+'</div>'));
                   }else{
                     if($.inArray(domain, foundApps[appName][1])==-1){
                       foundApps[appName][1].push(domain);
-                      if ($('#'+appName).closest('div').find('.appSrc').is(":visible")){  //accounting for toggling
-                        $('#'+appName).append($('<div class="appSrc" style="display:block;">'+domain+'</div>'));
+                      if ($('#'+appName).closest('div').find('.app-src').is(":visible")){  //accounting for toggling
+                        $('#'+appName).append($('<div class="app-src" style="display:block;">'+domain+'</div>'));
                       }else{
-                        $('#'+appName).append($('<div class="appSrc">'+domain+'</div>'));
+                        $('#'+appName).append($('<div class="app-src">'+domain+'</div>'));
                       }
                     }
                   }
@@ -105,15 +105,15 @@ $(document).ready(function(){
           var pageLoad = perfMetrics.loadEventEnd - perfMetrics.navigationStart;
           var fullyLoaded = request.fromBG[1] - perfMetrics.navigationStart;
 
-          $("#ttfb").text(' '+ttfb+' ms');
-          $("#domLoaded").text(' '+domLoaded+' ms');
-          $("#pageLoad").text(' '+pageLoad+' ms');
-          $("#fullyLoaded").text(' '+Math.round(fullyLoaded)+' ms');
+          $('#ttfb').text(' '+ttfb+' ms');
+          $('#dom-loaded').text(' '+domLoaded+' ms');
+          $('#page-load').text(' '+pageLoad+' ms');
+          $('#fully-loaded').text(' '+Math.round(fullyLoaded)+' ms');
         });
 
         //pie chart and legend updates
-        var $doughnutChart = $('#doughnutChart');
-        var $assetLegend = $('.assetLegend');
+        var $doughnutChart = $('#doughnut-chart');
+        var $assetLegend = $('.asset-legend');
         switch(request.fromBG[0].type) {
           case "script":
             jsCount++;
@@ -130,7 +130,7 @@ $(document).ready(function(){
             if (imageCount==1){
               $assetLegend.append($('<div class="square" style="background:#FC4349"></div><div>&nbsp;&nbsp;Image: <span id="image">1</span></div>'));
             }else{
-              $("#image").text(imageCount);
+              $('#image').text(imageCount);
             }
             break;
           case "stylesheet":
@@ -139,7 +139,7 @@ $(document).ready(function(){
             if (cssCount==1){
               $assetLegend.append($('<div class="square" style="background:#6DBCDB"></div><div>&nbsp;&nbsp;CSS: <span id="css">1</span></div>'));
             }else{
-              $("#css").text(cssCount);
+              $('#css').text(cssCount);
             }
             break;
           case "font":
@@ -148,7 +148,7 @@ $(document).ready(function(){
             if (fontCount==1){
               $assetLegend.append($('<div class="square" style="background:#F7E248"></div><div>&nbsp;&nbsp;Font: <span id="font">1</span></div>'));
             }else{
-              $("#font").text(fontCount);
+              $('#font').text(fontCount);
             }
             break;
           case "xmlhttprequest":
@@ -157,7 +157,7 @@ $(document).ready(function(){
             if (xhrCount==1){
               $assetLegend.append($('<div class="square" style="background:#009933"></div><div>&nbsp;&nbsp;XHR: <span id="xhr">1</span></div>'));
             }else{
-              $("#xhr").text(xhrCount);
+              $('#xhr').text(xhrCount);
             }
             break;
           case "main_frame":
@@ -166,7 +166,7 @@ $(document).ready(function(){
             if (htmlCount==1){
               $assetLegend.append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
             }else{
-              $("#html").text(htmlCount);
+              $('#html').text(htmlCount);
             }
             break;
           case "sub_frame":
@@ -175,7 +175,7 @@ $(document).ready(function(){
             if (htmlCount==1){
               $assetLegend.append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
             }else{
-              $("#html").text(htmlCount);
+              $('#html').text(htmlCount);
             }
             break;
           default:
@@ -184,7 +184,7 @@ $(document).ready(function(){
             if (otherCount==1){
               $assetLegend.append($('<div class="square" style="background:#FFF"></div><div>&nbsp;&nbsp;Other: <span id="other">1</span></div>'));
             }else{
-              $("#other").text(otherCount);
+              $('#other').text(otherCount);
             }
         }
         function redrawChart(){
@@ -212,14 +212,14 @@ $(document).ready(function(){
         otherCount = 0;
         foundApps = {};
         foundDomains = [];
-        $(".assetLegend").html('');
+        $('.asset-legend').html('');
       }
     };
   });
 
   //domain toggling
-  $('.category').on('click', '.appName', (function(){
-    $(this).closest('div').find('.appSrc').slideToggle("fast");
+  $('.category').on('click', '.app-name', (function(){
+    $(this).closest('div').find('.app-src').slideToggle("fast");
   }));
 });
 
@@ -233,17 +233,17 @@ function findApp(domain){
     'akadns':['Akamai','cdn','logos/Akamai-logo.png'],
     'edgecast':['EdgeCast','cdn','logos/EdgeCast-logo.png'],
     'cloudfront':['Cloudfront','cdn','logos/CloudFront-logo.png'],
-    'facebook':['Facebook', '3rdParty','logos/Facebook-logo.png'],
+    'facebook':['Facebook', '3rd-party','logos/Facebook-logo.png'],
     'google-analytics':['GoogleAnalytics', 'analytics','logos/Google_Analytics-logo.png'],
     'omtrdc':['Omniture', 'analytics','logos/Omniture-logo.png'],
-    'twitter':['Twitter', '3rdParty','logos/Twitter-logo.png'],
-    'doubleclick':['DoubleClick', '3rdParty','logos/DoubleClick-logo.png'],
+    'twitter':['Twitter', '3rd-party','logos/Twitter-logo.png'],
+    'doubleclick':['DoubleClick', '3rd-party','logos/DoubleClick-logo.png'],
     'monetate':['Monetate', 'analytics','logos/Monetate-logo.png'],
-    'googletagmanager':['GoogleTagManager', 'tagManager','logos/Google_Tag_Manager-logo.png'],
-    'tiqcdn':['Tealium', 'tagManager','logos/Tealium-logo.png'],
-    'thebrighttag':['BrightTag', 'tagManager','logos/BrightTag-logo.png'],
-    'adobedtm':['AdobeTagManager', 'tagManager','logos/Adobe-logo.png'],
-    'addthis':['AddThis', '3rdParty','logos/AddThis-logo.png'],
+    'googletag-manager':['Googletag-Manager', 'tag-manager','logos/Google_Tag_Manager-logo.png'],
+    'tiqcdn':['Tealium', 'tag-manager','logos/Tealium-logo.png'],
+    'thebrighttag':['BrightTag', 'tag-manager','logos/BrightTag-logo.png'],
+    'adobedtm':['Adobetag-Manager', 'tag-manager','logos/Adobe-logo.png'],
+    'addthis':['AddThis', '3rd-party','logos/AddThis-logo.png'],
     'fastly.net':['Fastly','cdn','logos/Fastly-logo.png'],
     'llnwd':['LimeLight','cdn','logos/Limelight-logo.png'],
     'cloudflare':['CloudFlare','cdn','logos/CloudFlare-logo.png'],
