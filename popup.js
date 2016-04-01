@@ -75,13 +75,13 @@ $(document).ready(function(){
             }else{
               foundApps[appName][1].push(domain_);
               if ($('#'+appName).closest('div').find('.app-src').is(":visible")){  //accounting for toggling
-                jQuery('<div/>',{
+                $('<div/>',{
                   class: 'app-src',
                   style: 'display:block',
                   text: domain_
                 }).appendTo('#'+appName);
               }else{
-                jQuery('<div/>',{
+                $('<div/>',{
                   class: 'app-src',
                   text: domain_
                 }).appendTo('#'+appName);
@@ -91,7 +91,7 @@ $(document).ready(function(){
 
           //populating found apps from cname of domains
           (function(domain) {
-            $.get("http://localhost:3000/nslookups?host="+domain, function(cname){
+            $.get("https://apps-dev-new.yottaa.com/assessment/nslookups?host="+domain, function(cname){
 
               console.log("From ruby server: "+cname);   //cname returned by Ruby server
               console.log("In callback Domain is: " + domain);
@@ -130,13 +130,13 @@ $(document).ready(function(){
                     if($.inArray(domain, foundApps[appName][1])==-1){
                       foundApps[appName][1].push(domain);
                       if ($('#'+appName).closest('div').find('.app-src').is(":visible")){  //accounting for toggling
-                        jQuery('<div/>',{
+                        $('<div/>',{
                           class: 'app-src',
                           style: 'display:block',
                           text: domain
                         }).appendTo('#'+appName);
                       }else{
-                        jQuery('<div/>',{
+                        $('<div/>',{
                           class: 'app-src',
                           text: domain
                         }).appendTo('#'+appName);
