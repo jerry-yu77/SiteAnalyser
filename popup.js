@@ -51,14 +51,40 @@ $(document).ready(function(){
           if (temp != "No App"){
             if (foundApps[appName]==null){
               foundApps[appName]=[appType,[domain_],appPic];
-              $('.'+appType).append($('<div class="app-name" id="'+appName+'"><p>'+appName+'<img align="right" class="app-pic" src="'+appPic+'"></img></p></div>'));
-                $('#'+appName).append($('<div class="app-src">'+domain_+'</div>'));  
+              var $appName = $('<div>',{
+                class: 'app-name',
+                id: appName
+              });
+              var $appText = $('<p>',{
+                text: appName
+              });
+              var $appPic = $('<img>',{
+                align: 'right',
+                class: 'app-pic',
+                src: appPic
+              });
+              var $appSrc = $('<div>',{
+                class: 'app-src',
+                text: domain_
+              });
+              $('.'+appType)
+                .append($appName
+                  .append($appText
+                    .append($appPic))
+                  .append($appSrc));
             }else{
               foundApps[appName][1].push(domain_);
               if ($('#'+appName).closest('div').find('.app-src').is(":visible")){  //accounting for toggling
-                $('#'+appName).append($('<div class="app-src" style="display:block;">'+domain_+'</div>'));
+                jQuery('<div/>',{
+                  class: 'app-src',
+                  style: 'display:block',
+                  text: domain_
+                }).appendTo('#'+appName);
               }else{
-                $('#'+appName).append($('<div class="app-src">'+domain_+'</div>'));
+                jQuery('<div/>',{
+                  class: 'app-src',
+                  text: domain_
+                }).appendTo('#'+appName);
               }
             }
           }
@@ -79,15 +105,41 @@ $(document).ready(function(){
                 if (temp1 != "No App"){
                   if (foundApps[appName]==null){
                     foundApps[appName]=[appType,[domain],appPic];
-                    $('.'+appType).append($('<div class="app-name" id="'+appName+'"><p>'+appName+'<img align="right" class="app-pic" src="'+appPic+'"></img></p></div>'));
-                      $('#'+appName).append($('<div class="app-src">'+domain+'</div>'));
+                    var $appName = $('<div>',{
+                      class: 'app-name',
+                      id: appName
+                    });
+                    var $appText = $('<p>',{
+                      text: appName
+                    });
+                    var $appPic = $('<img>',{
+                      align: 'right',
+                      class: 'app-pic',
+                      src: appPic
+                    });
+                    var $appSrc = $('<div>',{
+                      class: 'app-src',
+                      text: domain
+                    });
+                    $('.'+appType)
+                      .append($appName
+                        .append($appText
+                          .append($appPic))
+                        .append($appSrc));
                   }else{
                     if($.inArray(domain, foundApps[appName][1])==-1){
                       foundApps[appName][1].push(domain);
                       if ($('#'+appName).closest('div').find('.app-src').is(":visible")){  //accounting for toggling
-                        $('#'+appName).append($('<div class="app-src" style="display:block;">'+domain+'</div>'));
+                        jQuery('<div/>',{
+                          class: 'app-src',
+                          style: 'display:block',
+                          text: domain
+                        }).appendTo('#'+appName);
                       }else{
-                        $('#'+appName).append($('<div class="app-src">'+domain+'</div>'));
+                        jQuery('<div/>',{
+                          class: 'app-src',
+                          text: domain
+                        }).appendTo('#'+appName);
                       }
                     }
                   }
@@ -119,7 +171,21 @@ $(document).ready(function(){
             jsCount++;
             redrawChart();
             if (jsCount==1){
-              $assetLegend.append($('<div class="square" style="background:#2C3E50"></div><div>&nbsp;&nbsp;Javascript: <span id="javascript">1</span></div>'));
+              var $square = $('<div>',{
+                class: 'square',
+                style: 'background:#2C3E50'
+              });
+              var $squareText = $('<div>',{
+                html: '&nbsp;&nbsp;Javascript: '
+              });
+              var $squareCount = $('<span>',{
+                id: 'javascript',
+                text: '1'
+              });
+              $assetLegend
+                .append($square)
+                .append($squareText
+                  .append($squareCount));
             }else{
               $("#javascript").text(jsCount);
             }
@@ -128,7 +194,21 @@ $(document).ready(function(){
             imageCount++;
             redrawChart();
             if (imageCount==1){
-              $assetLegend.append($('<div class="square" style="background:#FC4349"></div><div>&nbsp;&nbsp;Image: <span id="image">1</span></div>'));
+              var $square = $('<div>',{
+                class: 'square',
+                style: 'background:#FC4349'
+              });
+              var $squareText = $('<div>',{
+                html: '&nbsp;&nbsp;Image: '
+              });
+              var $squareCount = $('<span>',{
+                id: 'image',
+                text: '1'
+              });
+              $assetLegend
+                .append($square)
+                .append($squareText
+                  .append($squareCount));
             }else{
               $('#image').text(imageCount);
             }
@@ -137,7 +217,21 @@ $(document).ready(function(){
             cssCount++;
             redrawChart();
             if (cssCount==1){
-              $assetLegend.append($('<div class="square" style="background:#6DBCDB"></div><div>&nbsp;&nbsp;CSS: <span id="css">1</span></div>'));
+              var $square = $('<div>',{
+                class: 'square',
+                style: 'background:#6DBCDB'
+              });
+              var $squareText = $('<div>',{
+                html: '&nbsp;&nbsp;CSS: '
+              });
+              var $squareCount = $('<span>',{
+                id: 'css',
+                text: '1'
+              });
+              $assetLegend
+                .append($square)
+                .append($squareText
+                  .append($squareCount));
             }else{
               $('#css').text(cssCount);
             }
@@ -146,7 +240,21 @@ $(document).ready(function(){
             fontCount++;
             redrawChart();
             if (fontCount==1){
-              $assetLegend.append($('<div class="square" style="background:#F7E248"></div><div>&nbsp;&nbsp;Font: <span id="font">1</span></div>'));
+              var $square = $('<div>',{
+                class: 'square',
+                style: 'background:#F7E248'
+              });
+              var $squareText = $('<div>',{
+                html: '&nbsp;&nbsp;Font: '
+              });
+              var $squareCount = $('<span>',{
+                id: 'font',
+                text: '1'
+              });
+              $assetLegend
+                .append($square)
+                .append($squareText
+                  .append($squareCount));
             }else{
               $('#font').text(fontCount);
             }
@@ -155,7 +263,21 @@ $(document).ready(function(){
             xhrCount++;
             redrawChart();
             if (xhrCount==1){
-              $assetLegend.append($('<div class="square" style="background:#009933"></div><div>&nbsp;&nbsp;XHR: <span id="xhr">1</span></div>'));
+              var $square = $('<div>',{
+                class: 'square',
+                style: 'background:#009933'
+              });
+              var $squareText = $('<div>',{
+                html: '&nbsp;&nbsp;XHR: '
+              });
+              var $squareCount = $('<span>',{
+                id: 'xhr',
+                text: '1'
+              });
+              $assetLegend
+                .append($square)
+                .append($squareText
+                  .append($squareCount));
             }else{
               $('#xhr').text(xhrCount);
             }
@@ -164,7 +286,21 @@ $(document).ready(function(){
             htmlCount++;
             redrawChart();
             if (htmlCount==1){
-              $assetLegend.append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
+              var $square = $('<div>',{
+                class: 'square',
+                style: 'background:#D7DADB'
+              });
+              var $squareText = $('<div>',{
+                html: '&nbsp;&nbsp;HTML: '
+              });
+              var $squareCount = $('<span>',{
+                id: 'html',
+                text: '1'
+              });
+              $assetLegend
+                .append($square)
+                .append($squareText
+                  .append($squareCount));
             }else{
               $('#html').text(htmlCount);
             }
@@ -173,7 +309,21 @@ $(document).ready(function(){
             htmlCount++;
             redrawChart();
             if (htmlCount==1){
-              $assetLegend.append($('<div class="square" style="background:#D7DADB"></div><div>&nbsp;&nbsp;HTML: <span id="html">1</span></div>'));
+              var $square = $('<div>',{
+                class: 'square',
+                style: 'background:#D7DADB'
+              });
+              var $squareText = $('<div>',{
+                html: '&nbsp;&nbsp;HTML: '
+              });
+              var $squareCount = $('<span>',{
+                id: 'html',
+                text: '1'
+              });
+              $assetLegend
+                .append($square)
+                .append($squareText
+                  .append($squareCount));
             }else{
               $('#html').text(htmlCount);
             }
@@ -182,7 +332,21 @@ $(document).ready(function(){
             otherCount++;
             redrawChart();
             if (otherCount==1){
-              $assetLegend.append($('<div class="square" style="background:#FFF"></div><div>&nbsp;&nbsp;Other: <span id="other">1</span></div>'));
+              var $square = $('<div>',{
+                class: 'square',
+                style: 'background:#FFF'
+              });
+              var $squareText = $('<div>',{
+                html: '&nbsp;&nbsp;Other: '
+              });
+              var $squareCount = $('<span>',{
+                id: 'other',
+                text: '1'
+              });
+              $assetLegend
+                .append($square)
+                .append($squareText
+                  .append($squareCount));
             }else{
               $('#other').text(otherCount);
             }
