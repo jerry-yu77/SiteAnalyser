@@ -170,7 +170,7 @@ $(document).ready(function(){
           case "script":
             jsCount++;
             redrawChart();
-            if (jsCount==1){
+            if (jsCount===1){
               var $square = $('<div>',{
                 class: 'square',
                 style: 'background:#2C3E50'
@@ -193,7 +193,7 @@ $(document).ready(function(){
           case "image":
             imageCount++;
             redrawChart();
-            if (imageCount==1){
+            if (imageCount===1){
               var $square = $('<div>',{
                 class: 'square',
                 style: 'background:#FC4349'
@@ -216,7 +216,7 @@ $(document).ready(function(){
           case "stylesheet":
             cssCount++;
             redrawChart();
-            if (cssCount==1){
+            if (cssCount===1){
               var $square = $('<div>',{
                 class: 'square',
                 style: 'background:#6DBCDB'
@@ -239,7 +239,7 @@ $(document).ready(function(){
           case "font":
             fontCount++;
             redrawChart();
-            if (fontCount==1){
+            if (fontCount===1){
               var $square = $('<div>',{
                 class: 'square',
                 style: 'background:#F7E248'
@@ -262,7 +262,7 @@ $(document).ready(function(){
           case "xmlhttprequest":
             xhrCount++;
             redrawChart();
-            if (xhrCount==1){
+            if (xhrCount===1){
               var $square = $('<div>',{
                 class: 'square',
                 style: 'background:#009933'
@@ -285,7 +285,7 @@ $(document).ready(function(){
           case "main_frame":
             htmlCount++;
             redrawChart();
-            if (htmlCount==1){
+            if (htmlCount===1){
               var $square = $('<div>',{
                 class: 'square',
                 style: 'background:#D7DADB'
@@ -308,7 +308,7 @@ $(document).ready(function(){
           case "sub_frame":
             htmlCount++;
             redrawChart();
-            if (htmlCount==1){
+            if (htmlCount===1){
               var $square = $('<div>',{
                 class: 'square',
                 style: 'background:#D7DADB'
@@ -331,7 +331,7 @@ $(document).ready(function(){
           default:
             otherCount++;
             redrawChart();
-            if (otherCount==1){
+            if (otherCount===1){
               var $square = $('<div>',{
                 class: 'square',
                 style: 'background:#FFF'
