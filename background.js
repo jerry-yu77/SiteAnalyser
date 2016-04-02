@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener(handlePopupRequest);
 
 function handleAllRequests(details){
 	if (details.tabId != -1){
-		if (tabs[details.tabId]==null){
+		if ((tabs[details.tabId] === null)||(tabs[details.tabId]===undefined)){
 			tabs[details.tabId] = [[details], details.timeStamp];
 			var message = [details, details.timeStamp];
 			chrome.runtime.sendMessage({fromBG: message});
@@ -42,7 +42,7 @@ function handleTabChange(tab){
 
 function handleURLChange(tabId, changeInfo, tab){
 	//reset tab assets to 0 on URL change
-	if (changeInfo.status == "loading"){
+	if (changeInfo.status === "loading"){
 		tabs[tabId]=null;
 		//send message to popup to reset count variables
 		chrome.runtime.sendMessage({fromBG: "reset"});

@@ -35,12 +35,12 @@ $(document).ready(function(){
 
     function handleMessageFromBG(request, sender, sendResponse){
       //filter for requests only for active tab
-      if (request.fromBG[0].tabId == activeTabId){
+      if (request.fromBG[0].tabId === activeTabId){
 
         var domain_ = getDomain(request.fromBG[0].url);
 
         //prevent searching of duplicate domains
-        if (foundDomains.indexOf(domain_)==-1){
+        if (foundDomains.indexOf(domain_)===-1){
           foundDomains.push(domain_);
           var temp = findApp(domain_);
           var appName = temp[0];
@@ -49,7 +49,7 @@ $(document).ready(function(){
 
           //populating found apps from domains
           if (temp != "No App"){
-            if (foundApps[appName]==null){
+            if (foundApps[appName]===undefined){
               foundApps[appName]=[appType,[domain_],appPic];
               var $appName = $('<div>',{
                 class: 'app-name',
@@ -103,7 +103,7 @@ $(document).ready(function(){
                 var appPic = temp1[2];
 
                 if (temp1 != "No App"){
-                  if (foundApps[appName]==null){
+                  if (foundApps[appName]===undefined){
                     foundApps[appName]=[appType,[domain],appPic];
                     var $appName = $('<div>',{
                       class: 'app-name',
@@ -127,7 +127,7 @@ $(document).ready(function(){
                           .append($appPic))
                         .append($appSrc));
                   }else{
-                    if($.inArray(domain, foundApps[appName][1])==-1){
+                    if($.inArray(domain, foundApps[appName][1])===-1){
                       foundApps[appName][1].push(domain);
                       if ($('#'+appName).closest('div').find('.app-src').is(":visible")){  //accounting for toggling
                         $('<div/>',{
@@ -366,7 +366,7 @@ $(document).ready(function(){
       }
 
       //reset counts to 0 on URL update
-      if (request.fromBG == "reset"){
+      if (request.fromBG === "reset"){
         htmlCount = 0;
         cssCount = 0;
         jsCount = 0;
